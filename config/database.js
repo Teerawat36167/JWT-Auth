@@ -1,14 +1,11 @@
-// const mongoose = require('mongoose')
-import Mongoose from "mongoose"
+const mongoose = require('mongoose')
 
 const { MONGO_URI } = process.env
 
 exports.connect = () => {
-    Mongoose.connect(MONGO_URI, {
+    mongoose.connect(MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
     })
     .then(() => {
         console.log("Successfully connected to database")
