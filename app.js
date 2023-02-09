@@ -54,8 +54,28 @@ app.post("/register", async (req, res) => {
 })
 
 //Login
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body
+        if (!(email && password)) {
+            res.status(400).send("All input is required")
+        }
 
+        const user = await User.findOne({ email })
+
+        if (user && (await bcrypt.compare(password, user.password))) {
+            //Create token
+            const token = jwt.sign(
+                { user_id: user._id, email },
+                process.env.TOKEN_KEY,
+                {
+                    expiresIn: "2h"
+                }
+            )
+        }
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 module.exports = app
