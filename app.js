@@ -63,7 +63,7 @@ app.post("/login", async (req, res) => {
 
         const user = await User.findOne({ email })
 
-        if (user && (await bcrypt.compare(password, user.password))) {
+        if (user && (bcrypt.compare(password, user.password))) {
             //Create token
             const token = jwt.sign(
                 { user_id: user._id, email },
@@ -72,7 +72,15 @@ app.post("/login", async (req, res) => {
                     expiresIn: "2h"
                 }
             )
+
+            // save token
+            user.token = token
+    
+            res.status(200).json(user)
         }
+
+        res.status(400).send("Invalid Credentials")
+
     } catch (err) {
         console.log(err)
     }
