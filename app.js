@@ -5,6 +5,7 @@ const express = require('express')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const auth = require('./middleware/auth')
 
 const app = express()
 
@@ -39,7 +40,7 @@ app.post("/register", async (req, res) => {
             { user_id: user._id, email},
             process.env.TOKEN_KEY,
             {
-                expiresIn: "2h"
+                expiresIn: "1d"
             }
         )
 
@@ -84,6 +85,10 @@ app.post("/login", async (req, res) => {
     } catch (err) {
         console.log(err)
     }
+})
+
+app.post('/welcome', auth, (req, res) => {
+    res.status(200).send('Welcome 🙏🏻')
 })
 
 module.exports = app
